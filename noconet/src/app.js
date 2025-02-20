@@ -68,6 +68,7 @@ function SplashPage() {
         <div id="wrapperDiv">
 
             <h1>Sign in!</h1>
+            {/* When the x is clicked it's trying to assign label val to null so just change that to empty */}
                 <Autocomplete
                 disablePortal
                 options={nocoMembers}
