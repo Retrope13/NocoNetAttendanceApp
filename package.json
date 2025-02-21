@@ -5,7 +5,9 @@
     "babel-loader": "^9.2.1"
   },
   "dependencies": {
+    "@mui/material": "^6.4.5",
     "react": "^19.0.0",
+    "react-bootstrap": "^2.10.9",
     "react-dom": "^19.0.0"
   }
 }
