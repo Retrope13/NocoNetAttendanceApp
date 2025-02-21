@@ -72,7 +72,7 @@ function SplashPage() {
                 <Autocomplete
                 disablePortal
                 options={nocoMembers}
-                sx={{ width: 300 }}
+                sx={{ width: 300 }} 
                 onChange={handleChange}
                 renderInput={(params) => <TextField {...params} label="Members" />}
             />
