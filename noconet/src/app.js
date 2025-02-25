@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { TextField, Button } from "@mui/material";
 import Box from '@mui/material/Box';
@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { Member } from "./MemberClass";
 import Autocomplete from '@mui/material/Autocomplete';
-import nocoMembers from './nocoMembers';
 
 const style = {
   position: 'absolute',
@@ -30,6 +29,13 @@ function SplashPage() {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const [membersArr, setMembersArr] = useState([]);
+    const memberJSON = require("./nocoMembers.json");
+
+    
+    useEffect(() => {
+        setMembersArr(memberJSON);
+    })
 
     const handleChange = (event, newValue) => {
         displayedMember._name = newValue.label
@@ -40,6 +46,11 @@ function SplashPage() {
         setMemberName(newValue.label);
         setMemberEmail(newValue.email);
         setMemberPhoneNumber(newValue.phoneNumber);
+    }
+
+    function modifyJSON() {
+        fs.writeFileSync(memberJSON, JSON.stringify(membersArr)); //^ I need to get fs to be defined
+        
     }
 
 
@@ -56,12 +67,13 @@ function SplashPage() {
             //Add logic to add them to the database here
             //You could also convert the list of members to a set to remove duplicates and then convert it back. This might also sort it alphabetically.
             //I might want to add a modal that says you successfully submitted you sign in
+
+            setMembersArr(membersArr + displayedMember)
+            modifyJSON();
             displayedMember.clear = "";
             console.log(displayedMember);
 
         }
-
-
     }
 
     return (
@@ -71,7 +83,7 @@ function SplashPage() {
             {/* When the x is clicked it's trying to assign label val to null so just change that to empty */}
                 <Autocomplete
                 disablePortal
-                options={nocoMembers}
+                options={membersArr}
                 sx={{ width: 300 }} 
                 onChange={handleChange}
                 renderInput={(params) => <TextField {...params} label="Members" />}
