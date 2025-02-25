@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { Member } from "./MemberClass";
 import Autocomplete from '@mui/material/Autocomplete';
+import membersArr from "./preload";
 
 const style = {
   position: 'absolute',
@@ -21,6 +22,7 @@ const style = {
 
 export const displayedMember = new Member();
 
+
 function SplashPage() {
     const [memberName, setMemberName] = useState("");
     const [memberEmail, setMemberEmail] = useState("");
@@ -31,7 +33,6 @@ function SplashPage() {
     const handleClose = () => setOpen(false);
     const [membersArr, setMembersArr] = useState([]);
     const memberJSON = require("./nocoMembers.json");
-
     
     useEffect(() => {
         setMembersArr(memberJSON);
@@ -41,7 +42,6 @@ function SplashPage() {
         displayedMember._name = newValue.label
         displayedMember._email = newValue.email
         displayedMember._phoneNumber = newValue.phoneNumber
-        console.log(displayedMember);
 
         setMemberName(newValue.label);
         setMemberEmail(newValue.email);
@@ -49,8 +49,21 @@ function SplashPage() {
     }
 
     function modifyJSON() {
-        fs.writeFileSync(memberJSON, JSON.stringify(membersArr)); //^ I need to get fs to be defined
-        
+        let displayedMemberconvert = {label: displayedMember._name, email: displayedMember._email, phoneNumber: displayedMember._phoneNumber }
+        membersArr.push(displayedMemberconvert);
+        const jsonData = JSON.stringify(membersArr);
+        const blob = new Blob([jsonData], { type: "application/json" });
+        const url =  URL.createObjectURL(blob);
+
+            //Create a link element, turn the href into a download link, name the file
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "./nocoMembers.json";
+        //then click the download link
+        a.click();
+
+        // Clean up by revoking the URL object
+        URL.revokeObjectURL(url);
     }
 
 
@@ -68,11 +81,8 @@ function SplashPage() {
             //You could also convert the list of members to a set to remove duplicates and then convert it back. This might also sort it alphabetically.
             //I might want to add a modal that says you successfully submitted you sign in
 
-            setMembersArr(membersArr + displayedMember)
             modifyJSON();
             displayedMember.clear = "";
-            console.log(displayedMember);
-
         }
     }
 
