@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { TextField, Button } from "@mui/material";
 import Box from '@mui/material/Box';
@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { Member } from "./MemberClass";
 import Autocomplete from '@mui/material/Autocomplete';
-import nocoMembers from './nocoMembers';
+import membersArr from "./preload";
 
 const style = {
   position: 'absolute',
@@ -22,6 +22,7 @@ const style = {
 
 export const displayedMember = new Member();
 
+
 function SplashPage() {
     const [memberName, setMemberName] = useState("");
     const [memberEmail, setMemberEmail] = useState("");
@@ -30,16 +31,39 @@ function SplashPage() {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const [membersArr, setMembersArr] = useState([]);
+    const memberJSON = require("./nocoMembers.json");
+    
+    useEffect(() => {
+        setMembersArr(memberJSON);
+    })
 
     const handleChange = (event, newValue) => {
         displayedMember._name = newValue.label
         displayedMember._email = newValue.email
         displayedMember._phoneNumber = newValue.phoneNumber
-        console.log(displayedMember);
 
         setMemberName(newValue.label);
         setMemberEmail(newValue.email);
         setMemberPhoneNumber(newValue.phoneNumber);
+    }
+
+    function modifyJSON() {
+        let displayedMemberconvert = {label: displayedMember._name, email: displayedMember._email, phoneNumber: displayedMember._phoneNumber }
+        membersArr.push(displayedMemberconvert);
+        const jsonData = JSON.stringify(membersArr);
+        const blob = new Blob([jsonData], { type: "application/json" });
+        const url =  URL.createObjectURL(blob);
+
+            //Create a link element, turn the href into a download link, name the file
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "./nocoMembers.json";
+        //then click the download link
+        a.click();
+
+        // Clean up by revoking the URL object
+        URL.revokeObjectURL(url);
     }
 
 
@@ -56,12 +80,10 @@ function SplashPage() {
             //Add logic to add them to the database here
             //You could also convert the list of members to a set to remove duplicates and then convert it back. This might also sort it alphabetically.
             //I might want to add a modal that says you successfully submitted you sign in
+
+            modifyJSON();
             displayedMember.clear = "";
-            console.log(displayedMember);
-
         }
-
-
     }
 
     return (
@@ -71,7 +93,7 @@ function SplashPage() {
             {/* When the x is clicked it's trying to assign label val to null so just change that to empty */}
                 <Autocomplete
                 disablePortal
-                options={nocoMembers}
+                options={membersArr}
                 sx={{ width: 300 }} 
                 onChange={handleChange}
                 renderInput={(params) => <TextField {...params} label="Members" />}
