@@ -38,7 +38,10 @@ function SplashPage() {
         setMembersArr(memberJSON);
     })
 
-    const handleChange = (event, newValue) => {
+    const handleChange = (event, newValue, reason) => {
+        if (reason === "clear") {
+            newValue = {label: "", email: "", phoneNumber: ""}
+        }
         displayedMember._name = newValue.label
         displayedMember._email = newValue.email
         displayedMember._phoneNumber = newValue.phoneNumber
@@ -50,10 +53,25 @@ function SplashPage() {
 
     function modifyJSON() {
         let displayedMemberconvert = {label: displayedMember._name, email: displayedMember._email, phoneNumber: displayedMember._phoneNumber }
-        membersArr.push(displayedMemberconvert);
+        let isDupeBool = false;
+        for (let i = 0; i < membersArr.length; i++) {
+            if (membersArr[i].label == displayedMemberconvert.label) {
+                isDupeBool = true
+            }
+        }
+
+        if (!isDupeBool) {
+            membersArr.push(displayedMemberconvert)
+        }
+
+        membersArr.sort((a, b) =>
+            a.label[0].localeCompare(b.label[0])
+        )
+
+
         const jsonData = JSON.stringify(membersArr);
         const blob = new Blob([jsonData], { type: "application/json" });
-        const url =  URL.createObjectURL(blob);
+        const url = URL.createObjectURL(blob);
 
             //Create a link element, turn the href into a download link, name the file
         const a = document.createElement("a");
