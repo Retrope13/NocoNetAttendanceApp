@@ -28,12 +28,17 @@ function SplashPage() {
     const [memberEmail, setMemberEmail] = useState("");
     const [memberPhoneNumber, setMemberPhoneNumber] = useState("");
     const [selectedMember, setSelectedMember] = useState();
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const [openErr, setOpenErr] = useState(false);
+    const [openSuccess, setOpenSuccess] = useState(false);
     const [membersArr, setMembersArr] = useState([]);
     const memberJSON = require("./nocoMembers.json");
     
+    const handleOpenErr = () => setOpenErr(true);
+    const handleCloseErr = () => setOpenErr(false);
+
+    const handleOpenSuccess = () => setOpenSuccess(false);
+    const handleCloseSuccess = () => setOpenSuccess(true);
+
     useEffect(() => {
         setMembersArr(memberJSON);
     })
@@ -88,9 +93,9 @@ function SplashPage() {
     function handleSubmit() {
         if (!memberName || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(memberEmail) || !memberPhoneNumber) {
             console.log("Can't submit form")
-            handleOpen();
+            handleOpenErr();
         } else {
-            console.log("can submit")
+            handleOpenSuccess();
             displayedMember._name = memberName;
             displayedMember._email = memberEmail;
             displayedMember._phoneNumber = memberPhoneNumber;
@@ -109,46 +114,57 @@ function SplashPage() {
 
             <h1>Sign in!</h1>
             {/* When the x is clicked it's trying to assign label val to null so just change that to empty */}
+            <div id="autocompleteDiv">
                 <Autocomplete
                 disablePortal
                 options={membersArr}
-                sx={{ width: 300 }} 
+                sx={{ width: "30%" }} 
                 onChange={handleChange}
-                renderInput={(params) => <TextField {...params} label="Members" />}
+                renderInput={(params) => <TextField sx = {{input: {color: "white"}, background: {color: "white"}}} {...params} label="Members" />}
             />
-            <TextField
-                error = {!memberName}
-                id="standard-basic-name"
-                label="Name"
-                variant="standard"
-                value={memberName}
-                onChange={(e) => setMemberName(e.target.value)}
-            />
-            <TextField
-                error= {!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(memberEmail)}
-                id="standard-basic-email"
-                label="email@example.com"
-                variant="standard"
-                value={memberEmail}
-                onChange={(e) => setMemberEmail(e.target.value)}
-            />
-            <TextField
-                error={!memberPhoneNumber}
-                id="standard-basic-phoneNumber"
-                label="Phone Number"
-                variant="standard"
-                value={memberPhoneNumber}
-                onChange={(e) => setMemberPhoneNumber(e.target.value)}
-            />
+            </div>
+            <div id="firstRowInputs">
 
-            <Button variant="contained" onClick={handleSubmit}>Submit!</Button>
+                <TextField
+                    error = {!memberName}
+                    id="standard-basic-name"
+                    label="Name"
+                    variant="standard"
+                    value={memberName}
+                    sx = {{paddingRight: "3%", width: "20%"}}
+                    onChange={(e) => setMemberName(e.target.value)}
+                    color="white"
+                />
+                <TextField
+                    error= {!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(memberEmail)}
+                    id="standard-basic-email"
+                    label="email@example.com"
+                    variant="standard"
+                    value={memberEmail}
+                    sx = {{ paddingRight: "3%", width: "20%"}}
+                    onChange={(e) => setMemberEmail(e.target.value)}
+                />
+                <TextField
+                    error={!memberPhoneNumber}
+                    id="standard-basic-phoneNumber"
+                    label="Phone Number"
+                    variant="standard"
+                    value={memberPhoneNumber}
+                    sx = {{paddingRight: "3%", width: "20%"}}
+                    onChange={(e) => setMemberPhoneNumber(e.target.value)}
+                />
+            </div>
+
+            <div id="submitButtonDiv">
+                <Button variant="contained" onClick={handleSubmit}>Submit!</Button>
+            </div>
 
 
 
             <div>
                 <Modal
-                    open={open}
-                    onClose={handleClose}
+                    open={openErr}
+                    onClose={handleCloseErr}
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >
@@ -158,6 +174,25 @@ function SplashPage() {
                     </Typography>
                     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                         You need to fill out all sections of the form before you can submit it. Click out of this to return to the entry page
+                    </Typography>
+                    </Box>
+                </Modal>
+            </div>
+
+
+            <div>
+                <Modal
+                    open={openSuccess}
+                    onClose={handleCloseSuccess}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={style}>
+                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                        Thank you!
+                    </Typography>
+                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                        You have successfully signed in to today's NocoNet Meeting!
                     </Typography>
                     </Box>
                 </Modal>
