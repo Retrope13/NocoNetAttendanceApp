@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { Member } from "./MemberClass";
 import Autocomplete from '@mui/material/Autocomplete';
-import membersArr from "./preload";
 
 const style = {
   position: 'absolute',
@@ -33,6 +32,7 @@ function SplashPage() {
     const [membersArr, setMembersArr] = useState([]);
     const [atendees, setAtendees] = useState([]);
     const memberJSON = require("./nocoMembers.json");
+
     
     const handleOpenErr = () => setOpenErr(true);
     const handleCloseErr = () => setOpenErr(false);
@@ -67,7 +67,7 @@ function SplashPage() {
             //Create a link element, turn the href into a download link, name the file
         const a = document.createElement("a");
         a.href = url;
-        let dateStr = date.getMonth() + "/" + date.getDate() + "/" + date.getFullYear();
+        let dateStr = date.getMonth() + "/" + date.getDate() + "/" + date.getFullYear() + "_Attendance";
         a.download = dateStr;
         //then click the download link
         a.click();
@@ -92,7 +92,6 @@ function SplashPage() {
         URL.revokeObjectURL(url);
         createAttendanceFile();
     }
-
 
     function handleSubmit() {
         if (!memberName || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(memberEmail) || !memberPhoneNumber) {
