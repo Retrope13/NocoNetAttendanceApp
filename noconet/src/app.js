@@ -31,13 +31,14 @@ function SplashPage() {
     const [openErr, setOpenErr] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
     const [membersArr, setMembersArr] = useState([]);
+    const [atendees, setAtendees] = useState([]);
     const memberJSON = require("./nocoMembers.json");
     
     const handleOpenErr = () => setOpenErr(true);
     const handleCloseErr = () => setOpenErr(false);
 
-    const handleOpenSuccess = () => setOpenSuccess(false);
-    const handleCloseSuccess = () => setOpenSuccess(true);
+    const handleOpenSuccess = () => setOpenSuccess(true);
+    const handleCloseSuccess = () => setOpenSuccess(false);
 
     useEffect(() => {
         setMembersArr(memberJSON);
@@ -56,24 +57,26 @@ function SplashPage() {
         setMemberPhoneNumber(newValue.phoneNumber);
     }
 
-    function modifyJSON() {
-        let displayedMemberconvert = {label: displayedMember._name, email: displayedMember._email, phoneNumber: displayedMember._phoneNumber }
-        let isDupeBool = false;
-        for (let i = 0; i < membersArr.length; i++) {
-            if (membersArr[i].label == displayedMemberconvert.label) {
-                isDupeBool = true
-            }
-        }
+    function createAttendanceFile() {
+        const jsonData = JSON.stringify(atendees);
+        const blob = new Blob([jsonData], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
 
-        if (!isDupeBool) {
-            membersArr.push(displayedMemberconvert)
-        }
+        const date = new Date();
 
-        membersArr.sort((a, b) =>
-            a.label[0].localeCompare(b.label[0])
-        )
+            //Create a link element, turn the href into a download link, name the file
+        const a = document.createElement("a");
+        a.href = url;
+        let dateStr = date.getMonth() + "/" + date.getDate() + "/" + date.getFullYear();
+        a.download = dateStr;
+        //then click the download link
+        a.click();
 
+        // Clean up by revoking the URL object
+        URL.revokeObjectURL(url);
+    }
 
+    function createMemberDB() {
         const jsonData = JSON.stringify(membersArr);
         const blob = new Blob([jsonData], { type: "application/json" });
         const url = URL.createObjectURL(blob);
@@ -87,6 +90,7 @@ function SplashPage() {
 
         // Clean up by revoking the URL object
         URL.revokeObjectURL(url);
+        createAttendanceFile();
     }
 
 
@@ -95,16 +99,34 @@ function SplashPage() {
             console.log("Can't submit form")
             handleOpenErr();
         } else {
-            handleOpenSuccess();
             displayedMember._name = memberName;
             displayedMember._email = memberEmail;
             displayedMember._phoneNumber = memberPhoneNumber;
 
-            //Add logic to add them to the database here
-            //You could also convert the list of members to a set to remove duplicates and then convert it back. This might also sort it alphabetically.
-            //I might want to add a modal that says you successfully submitted you sign in
+            let displayedMemberconvert = {label: displayedMember._name, email: displayedMember._email, phoneNumber: displayedMember._phoneNumber } //convert the current member to expected format
+            let isDupeBool = false;
+            for (let i = 0; i < membersArr.length; i++) {
+                if (membersArr[i].label == displayedMemberconvert.label) {
+                    isDupeBool = true
+                }
+            }
+    
+            if (!isDupeBool) {
+                membersArr.push(displayedMemberconvert);
+            }
+            
+            membersArr.sort((a, b) =>
+                a.label[0].localeCompare(b.label[0])
+            )
 
-            modifyJSON();
+            atendees.push(displayedMemberconvert);
+
+            atendees.sort((a, b) =>
+                a.label[0].localeCompare(b.label[0])
+            )
+            
+            //I might want to add a modal that says you successfully submitted you sign in
+            handleOpenSuccess();
             displayedMember.clear = "";
         }
     }
@@ -157,6 +179,10 @@ function SplashPage() {
 
             <div id="submitButtonDiv">
                 <Button variant="contained" onClick={handleSubmit}>Submit!</Button>
+            </div>
+
+            <div id="endDayButtonDiv">
+                <Button variant="contained" sx={{width: "20%", background: "#c22f3b"}} onClick={createMemberDB}>Save Attendance!</Button>
             </div>
 
 
