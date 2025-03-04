@@ -25,3 +25,9 @@ body {
   justify-content: center;
   
 }
+
+#endDayButtonDiv {
+  display: flex;
+  justify-content: center;
+  margin-top: 10%;
+}
