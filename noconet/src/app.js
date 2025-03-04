@@ -41,7 +41,7 @@ function SplashPage() {
     const handleCloseSuccess = () => setOpenSuccess(false);
 
     useEffect(() => {
-        setMembersArr(memberJSON);
+        setMembersArr(memberJSON); 
     })
 
     const handleChange = (event, newValue, reason) => {
