@@ -7,6 +7,11 @@ import Modal from '@mui/material/Modal';
 import { Member } from "./MemberClass";
 import Autocomplete from '@mui/material/Autocomplete';
 
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = 'https://aaesucrayihffikynqdd.supabase.co'
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhZXN1Y3JheWloZmZpa3lucWRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAxNTk1NjIsImV4cCI6MjA1NTczNTU2Mn0.kS9UwAS6XRVSRbVvvb_2UPKZU5BBdSY02q64m8q9Fjg"
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 const style = {
     position: 'absolute',
@@ -40,7 +45,15 @@ function SplashPage() {
     const handleOpenSuccess = () => setOpenSuccess(true);
     const handleCloseSuccess = () => setOpenSuccess(false);
     
+    async function getU() {
+        let { data: members, error } = await supabase
+        .from('members')
+        .select('name')
+        console.log(members)
+    }
+
     useEffect(() => {
+        getU()
         setMembersArr(memberJSON);
     })
     
