@@ -6,22 +6,18 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { Member } from "./MemberClass";
 import Autocomplete from '@mui/material/Autocomplete';
-import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = 'https://aaesucrayihffikynqdd.supabase.co'
-const supabaseKey = process.env.SUPABASEKEY
-const supabase = createClient(supabaseUrl, supabaseKey)
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
 };
 
 export const displayedMember = new Member();
@@ -40,15 +36,14 @@ function SplashPage() {
     
     const handleOpenErr = () => setOpenErr(true);
     const handleCloseErr = () => setOpenErr(false);
-
+    
     const handleOpenSuccess = () => setOpenSuccess(true);
     const handleCloseSuccess = () => setOpenSuccess(false);
-
+    
     useEffect(() => {
         setMembersArr(memberJSON);
-        console.log(supabase)
     })
-
+    
     const handleChange = (event, newValue, reason) => {
         if (reason === "clear") {
             newValue = {label: "", email: "", phoneNumber: ""}
