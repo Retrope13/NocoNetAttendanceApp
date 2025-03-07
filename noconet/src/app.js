@@ -6,7 +6,11 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { Member } from "./MemberClass";
 import Autocomplete from '@mui/material/Autocomplete';
-import membersArr from "./preload";
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = 'https://aaesucrayihffikynqdd.supabase.co'
+const supabaseKey = process.env.SUPABASEKEY
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 const style = {
   position: 'absolute',
@@ -42,6 +46,7 @@ function SplashPage() {
 
     useEffect(() => {
         setMembersArr(memberJSON);
+        console.log(supabase)
     })
 
     const handleChange = (event, newValue, reason) => {
